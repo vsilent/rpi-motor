@@ -19,6 +19,13 @@ class StepperMotor(object):
         GPIO.cleanup()
         print('pins reset')
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        GPIO.cleanup()
+        print('pins reset')
+
     def step(self, direction, delay):
         """docstring for step_clockwise"""
         if direction == self.CLOCKWISE:
@@ -53,11 +60,12 @@ class StepperMotor(object):
                 GPIO.output(self.pins[3], pin3)
                 sleep(delay)
 
-motor1 = StepperMotor(pins=(3, 5, 7, 8))
-print ('Clockwise')
-for i in range (2):
-    motor1.step(StepperMotor.CLOCKWISE, .05)
-for i in range (2):
-    print ('Anticlockwise')
-    motor1.step(StepperMotor.ANTICLOCKWISE, .05)
+with StepperMotor(pins=(3, 5, 7, 8)) as motor:
+    print ('Clockwise')
+    for i in range (2):
+        motor.step(StepperMotor.CLOCKWISE, .05)
+
+    for i in range (2):
+        print ('Anticlockwise')
+        motor.step(StepperMotor.ANTICLOCKWISE, .05)
 
