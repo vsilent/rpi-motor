@@ -1,8 +1,13 @@
 from time import sleep
 import RPi.GPIO as GPIO
 
+"""
 
-class StepperMotor(object):
+Stepper motor 28BYJ-48 driver
+
+"""
+
+class StepperMotor28BYJ(object):
     pins = None
     CLOCKWISE = 1          # rotate clockwise
     ANTICLOCKWISE  = -1    # rotate counterclockwise
@@ -10,62 +15,63 @@ class StepperMotor(object):
 
     def __init__(self, pins, **kwargs):
         self.pins = pins
-        self.state = 1
+        self.state = 3
         GPIO.setmode(GPIO.BOARD)
         for pin in self.pins:
             GPIO.setup(pin, GPIO.OUT)
+            pass
 
     def __del__( self ):
+        """reset pins"""
         GPIO.cleanup()
-        print('pins reset')
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        """reset pins"""
         GPIO.cleanup()
-        print('pins reset')
 
     def step(self, direction, delay):
         """docstring for step_clockwise"""
+        steps = (
+            [0,0,0,1],
+            [0,0,1,1],
+            [0,0,1,0],
+            [0,1,1,0],
+            [0,1,0,0],
+            [1,1,0,0],
+            [1,0,0,0],
+            [1,0,0,1]
+        )
+
         if direction == self.CLOCKWISE:
-            for i in range (4):
-                byte = self.state << i
-                print('send %d' % byte)
-                pin0 = byte & 1 > 0
-                pin1 = byte & 2 > 0
-                pin2 = byte & 4 > 0
-                pin3 = byte & 8 > 0
+            for byte in steps:
                 print('Send %s' % byte)
-                print(pin0, pin1, pin2, pin3)
-                GPIO.output(self.pins[0], pin0)
-                GPIO.output(self.pins[1], pin1)
-                GPIO.output(self.pins[2], pin2)
-                GPIO.output(self.pins[3], pin3)
+
+                i = 0
+                for pin in self.pins:
+                    GPIO.output(pin, byte[i])
+                    i += 1
                 sleep(delay)
 
-        elif direction == self.ANTICLOCKWISE:
-            state = 8
-            for i in range (4):
-                byte = state >> i
-                pin0 = byte & 8 > 0
-                pin1 = byte & 4 > 0
-                pin2 = byte & 2 > 0
-                pin3 = byte & 1 > 0
+        if direction == self.ANTICLOCKWISE:
+
+            for byte in steps[::-1]:
                 print('Send %s' % byte)
-                print(pin0, pin1, pin2, pin3)
-                GPIO.output(self.pins[0], pin0)
-                GPIO.output(self.pins[1], pin1)
-                GPIO.output(self.pins[2], pin2)
-                GPIO.output(self.pins[3], pin3)
+
+                i = 0
+                for pin in self.pins:
+                    GPIO.output(pin, byte[i])
+                    i += 1
                 sleep(delay)
 
-with StepperMotor(pins=(3, 5, 7, 8)) as motor:
+
+with StepperMotor28BYJ(pins=(3, 5, 7, 8)) as motor:
     print ('Clockwise')
-    for i in range (2):
-        motor.step(StepperMotor.CLOCKWISE, .05)
+    for i in range (10):
+        motor.step(StepperMotor28BYJ.CLOCKWISE, 0.05)
 
-    for i in range (2):
+    for i in range (10):
         print ('Anticlockwise')
-        motor.step(StepperMotor.ANTICLOCKWISE, .05)
-
+        motor.step(StepperMotor28BYJ.ANTICLOCKWISE, .05)
