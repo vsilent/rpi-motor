@@ -69,9 +69,9 @@ class StepperMotor28BYJ(object):
 
 with StepperMotor28BYJ(pins=(3, 5, 7, 8)) as motor:
     print ('Clockwise')
-    for i in range (10):
-        motor.step(StepperMotor28BYJ.CLOCKWISE, 0.05)
+    for i in range (140):
+        motor.step(StepperMotor28BYJ.CLOCKWISE, 0.0005)
 
-    for i in range (10):
+    for i in range (140):
         print ('Anticlockwise')
-        motor.step(StepperMotor28BYJ.ANTICLOCKWISE, .05)
+        motor.step(StepperMotor28BYJ.ANTICLOCKWISE, .0005)
