@@ -67,7 +67,7 @@ class StepperMotor28BYJ(object):
                 sleep(delay)
 
 
-with StepperMotor28BYJ(pins=(3, 5, 7, 8)) as motor:
+with StepperMotor28BYJ(pins=(11, 13, 15, 16)) as motor:
     print ('Clockwise')
     for i in range (140):
         motor.step(StepperMotor28BYJ.CLOCKWISE, 0.0005)
