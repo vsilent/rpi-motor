@@ -47,7 +47,7 @@ class StepperMotor28BYJ(object):
 
         if direction == self.CLOCKWISE:
             for byte in steps:
-                print('Send %s' % byte)
+                #print('Send %s' % byte)
 
                 i = 0
                 for pin in self.pins:
@@ -58,7 +58,7 @@ class StepperMotor28BYJ(object):
         if direction == self.ANTICLOCKWISE:
 
             for byte in steps[::-1]:
-                print('Send %s' % byte)
+                #print('Send %s' % byte)
 
                 i = 0
                 for pin in self.pins:
@@ -69,9 +69,9 @@ class StepperMotor28BYJ(object):
 
 with StepperMotor28BYJ(pins=(11, 13, 15, 16)) as motor:
     print ('Clockwise')
-    for i in range (140):
-        motor.step(StepperMotor28BYJ.CLOCKWISE, 0.0005)
+    for i in range (240):
+        motor.step(StepperMotor28BYJ.CLOCKWISE, 0.0009)
 
-    for i in range (140):
-        print ('Anticlockwise')
-        motor.step(StepperMotor28BYJ.ANTICLOCKWISE, .0005)
+    print ('Anticlockwise')
+    for i in range (240):
+        motor.step(StepperMotor28BYJ.ANTICLOCKWISE, .0009)
